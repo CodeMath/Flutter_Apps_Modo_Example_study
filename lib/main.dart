@@ -12,6 +12,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'MODO App', theme: ModoTheme.ligntTheme, home: HomePage());
+        title: 'MODO App', theme: ModoTheme.ligntTheme, home: const HomePage());
   }
 }
