@@ -8,6 +8,7 @@ class ModoTheme {
       scaffoldBackgroundColor: Colors.white,
       splashColor: Colors.white,
       textTheme: _textTheme,
+      appBarTheme: _appBarTheme,
       brightness: Brightness.light);
 
   static ThemeData get darkTheme => ThemeData(
@@ -16,6 +17,12 @@ class ModoTheme {
       splashColor: Colors.white,
       textTheme: _textTheme,
       brightness: Brightness.dark);
+
+  static const AppBarTheme _appBarTheme = AppBarTheme(
+      backgroundColor: Colors.white,
+      iconTheme: IconThemeData(color: ModoColors.primaryColor),
+      // 상단 바 경계선 삭제
+      elevation: 0);
 
   static const TextTheme _textTheme = TextTheme(
       headline4: TextStyle(fontSize: 32, fontWeight: FontWeight.w400),
