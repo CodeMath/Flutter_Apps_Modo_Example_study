@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modo/components/modo_colors.dart';
-import 'package:modo/pages/add/add_page.dart';
+import 'package:modo/pages/add/add_medicine_page.dart';
 import 'package:modo/pages/history/history_page.dart';
 import 'package:modo/pages/today/today_page.dart';
 
@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
           appBar: AppBar(),
           body: _page[_currentIndex],
           floatingActionButton: FloatingActionButton(
-            onPressed: _onAddMeicien,
+            onPressed: _onAddMeicine,
             child: const Icon(CupertinoIcons.add),
           ),
           floatingActionButtonLocation:
@@ -71,10 +71,10 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _onAddMeicien() {
+  void _onAddMeicine() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const AddPage()),
+      MaterialPageRoute(builder: (context) => const AddMedicinepage()),
     );
   }
 }
