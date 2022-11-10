@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modo/components/modo_constants.dart';
 import 'package:modo/components/modo_page_route.dart';
+import 'package:modo/components/modo_widgets.dart';
 import 'package:modo/pages/add/add_alarm_page.dart';
+import 'package:modo/pages/add/components/add_page_widget.dart';
 
 class AddMedicinepage extends StatefulWidget {
   const AddMedicinepage({super.key});
@@ -27,74 +29,48 @@ class _AddMedicinepageState extends State<AddMedicinepage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: const CloseButton(),
-      ),
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: pagePadding,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "어떤 약이에요?",
-                  style: Theme.of(context).textTheme.headline4,
-                ),
-                const SizedBox(height: largeSpace),
-                Center(
-                  child: MedicineImageButton(
-                    changeImageFile: (File? value) {
-                      _medicineImage = value;
-                    },
-                  ),
-                ),
-                const SizedBox(height: largeSpace + regularSpace),
-                Text(
-                  "약 이름",
-                  style: Theme.of(context).textTheme.subtitle1,
-                ),
-                TextFormField(
-                  controller: _nameController,
-                  maxLength: 20,
-                  keyboardType: TextInputType.text,
-                  textInputAction: TextInputAction.done,
-                  style: Theme.of(context).textTheme.bodyText2,
-                  decoration: InputDecoration(
-                    hintText: "복용할 약 이름을 기입해주세요.",
-                    hintStyle: Theme.of(context).textTheme.bodyText2,
-                    contentPadding: textFieldContentPadding,
-                  ),
-                  onChanged: (_) {
-                    setState(() {});
-                  },
-                ),
-              ],
-            ),
-          ),
+        appBar: AppBar(
+          leading: const CloseButton(),
         ),
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: submitButtonBoxPadding,
-          child: SizedBox(
-            height: submitButtonHeight,
-            child: ElevatedButton(
-              onPressed: _nameController.text.isEmpty ? null : _onAddAlarmPage,
-              // onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                  textStyle: Theme.of(context).textTheme.subtitle1),
-              child: const Text(
-                "다음",
+        body: SingleChildScrollView(
+          child: AddPageBody(children: [
+            Text(
+              "어떤 약이에요?",
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            const SizedBox(height: largeSpace),
+            Center(
+              child: MedicineImageButton(
+                changeImageFile: (File? value) {
+                  _medicineImage = value;
+                },
               ),
             ),
-          ),
+            const SizedBox(height: largeSpace + regularSpace),
+            Text(
+              "약 이름",
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
+            TextFormField(
+              controller: _nameController,
+              maxLength: 20,
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.done,
+              style: Theme.of(context).textTheme.bodyText2,
+              decoration: InputDecoration(
+                hintText: "복용할 약 이름을 기입해주세요.",
+                hintStyle: Theme.of(context).textTheme.bodyText2,
+                contentPadding: textFieldContentPadding,
+              ),
+              onChanged: (_) {
+                setState(() {});
+              },
+            ),
+          ]),
         ),
-      ),
-    );
+        bottomNavigationBar: BottomSubmitButton(
+            onPressed: _nameController.text.isEmpty ? null : _onAddAlarmPage,
+            text: "다음"));
   }
 
   void _onAddAlarmPage() {
@@ -179,19 +155,11 @@ class PickImageBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: pagePadding,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextButton(
-                onPressed: onPressedCamera, child: const Text("카메라로 촬영")),
-            TextButton(
-                onPressed: onPressedGallery, child: const Text("앨범에서 가져오기")),
-          ],
-        ),
-      ),
+    return BottomSheetBody(
+      children: [
+        TextButton(onPressed: onPressedCamera, child: const Text("카메라로 촬영")),
+        TextButton(onPressed: onPressedGallery, child: const Text("앨범에서 가져오기")),
+      ],
     );
   }
 }
