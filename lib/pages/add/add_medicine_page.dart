@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:modo/components/modo_constants.dart';
 
 class AddMedicinepage extends StatefulWidget {
@@ -11,6 +14,7 @@ class AddMedicinepage extends StatefulWidget {
 
 class _AddMedicinepageState extends State<AddMedicinepage> {
   final TextEditingController _nameController = TextEditingController();
+  File? _pickedImage;
 
   @override
   void dispose() {
@@ -42,9 +46,25 @@ class _AddMedicinepageState extends State<AddMedicinepage> {
                 child: CircleAvatar(
                   radius: 40,
                   child: CupertinoButton(
-                    onPressed: () {},
-                    child: const Icon(Icons.camera_alt_outlined,
-                        size: 30, color: Colors.white),
+                    onPressed: () {
+                      ImagePicker()
+                          // ImageSource.camera
+                          .pickImage(source: ImageSource.gallery)
+                          .then((xfile) {
+                        if (xfile == null) return;
+                        setState(() {
+                          _pickedImage = File(xfile.path);
+                        });
+                      });
+                    },
+                    padding: _pickedImage == null ? null : EdgeInsets.zero,
+                    child: _pickedImage == null
+                        ? const Icon(Icons.camera_alt_outlined,
+                            size: 30, color: Colors.white)
+                        : CircleAvatar(
+                            foregroundImage: FileImage(_pickedImage!),
+                            radius: 40,
+                          ),
                   ),
                 ),
               ),
