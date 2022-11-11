@@ -37,6 +37,7 @@ class ModoNotificationService {
   }
 
   Future<bool> addNotifications({
+    required int medicineId, // unique
     required String alarmTimeStr,
     required String title, // HH:mm 약 먹을 시간이예요!
     required String body, // {약이름} 복약했다고 알려주세요!
@@ -55,7 +56,8 @@ class ModoNotificationService {
         : now.day;
 
     /// id
-    final alarmTimeId = alarmTimeStr.replaceAll(':', '');
+    String alarmTimeId = alarmTimeStr.replaceAll(':', '');
+    alarmTimeId = medicineId.toString() + alarmTimeId;
 
     /// add schedule notification
     final details = _notificationDetails(
@@ -65,7 +67,7 @@ class ModoNotificationService {
     );
 
     await notification.zonedSchedule(
-      int.parse(alarmTimeId), // unique
+      int.parse(alarmTimeId), // unique, 1+08:00 > 10800 / 2+08:00 > 20800 ...
       title,
       body,
       tz.TZDateTime(

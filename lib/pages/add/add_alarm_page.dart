@@ -10,6 +10,8 @@ import 'package:modo/pages/add/components/add_page_widget.dart';
 import 'package:modo/services/add_medicine_service.dart';
 
 import '../../components/modo_widgets.dart';
+import '../../models/medicine.dart';
+import '../../services/modo_file_service.dart';
 
 class AddAlarmPage extends StatelessWidget {
   AddAlarmPage(
@@ -50,6 +52,8 @@ class AddAlarmPage extends StatelessWidget {
 
           for (var alarm in service.alarms) {
             result = await notification.addNotifications(
+              // id : 1+ 08:00 > 10800
+              medicineId: medicineRepository.newId,
               alarmTimeStr: alarm,
               title: "$alarm 약 먹을 시간이에요!",
               body: "$medicineName 복약했다고 알려주세요!",
@@ -62,7 +66,21 @@ class AddAlarmPage extends StatelessWidget {
           }
 
           // 2. save image(local dir) & text
+          // android Up to SDK 31 version
+          String? imageFilePath;
+          if (medicineImage != null) {
+            imageFilePath = await saveImageToLocalDirectory(medicineImage!);
+          }
+
           // 3. add medicine model (local DB, hive)
+          final medicine = Medicine(
+              id: medicineRepository.newId,
+              alarms: service.alarms,
+              imagePath: imageFilePath,
+              name: medicineName);
+          medicineRepository.addMedicine(medicine);
+          // 메인으로
+          Navigator.popUntil(context, (route) => route.isFirst);
         },
         text: "완료",
       ),
