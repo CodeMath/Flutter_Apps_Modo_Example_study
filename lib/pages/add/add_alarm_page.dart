@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:modo/main.dart';
 import 'package:intl/intl.dart';
 import 'package:modo/components/modo_colors.dart';
 import 'package:modo/components/modo_constants.dart';
@@ -43,7 +44,26 @@ class AddAlarmPage extends StatelessWidget {
         )),
       ]),
       bottomNavigationBar: BottomSubmitButton(
-        onPressed: () {},
+        onPressed: () async {
+          // 1. add alarm
+          bool result = false;
+
+          for (var alarm in service.alarms) {
+            result = await notification.addNotifications(
+              alarmTimeStr: alarm,
+              title: "$alarm 약 먹을 시간이에요!",
+              body: "$medicineName 복약했다고 알려주세요!",
+            );
+
+            if (!result) {
+              // ignore: use_build_context_synchronously
+              return showPermissionDeneid(context, permission: "알람 접근 권한");
+            }
+          }
+
+          // 2. save image(local dir) & text
+          // 3. add medicine model (local DB, hive)
+        },
         text: "완료",
       ),
     );
@@ -106,6 +126,7 @@ class AlarmBox extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class TimePickerBottomSheet extends StatelessWidget {
   TimePickerBottomSheet({
     super.key,

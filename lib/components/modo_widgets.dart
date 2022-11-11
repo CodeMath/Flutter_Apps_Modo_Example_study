@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:modo/components/modo_constants.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class BottomSheetBody extends StatelessWidget {
   const BottomSheetBody({super.key, required this.children});
@@ -16,4 +17,15 @@ class BottomSheetBody extends StatelessWidget {
       ),
     ));
   }
+}
+
+void showPermissionDeneid(BuildContext context, {required String permission}) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text("$permission 권한이 없습니다."),
+      const TextButton(onPressed: openAppSettings, child: Text("설정창으로 이동"))
+    ],
+  )));
 }
