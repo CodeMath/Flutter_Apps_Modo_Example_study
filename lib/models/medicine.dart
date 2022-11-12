@@ -6,7 +6,7 @@ import 'package:hive/hive.dart';
 part 'medicine.g.dart';
 
 @HiveType(typeId: 1)
-class Medicine {
+class Medicine extends HiveObject {
   Medicine({
     required this.id,
     required this.name,
