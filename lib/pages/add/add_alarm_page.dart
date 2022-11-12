@@ -75,11 +75,12 @@ class AddAlarmPage extends StatelessWidget {
           // 3. add medicine model (local DB, hive)
           final medicine = Medicine(
               id: medicineRepository.newId,
-              alarms: service.alarms,
+              alarms: service.alarms.toList(),
               imagePath: imageFilePath,
               name: medicineName);
           medicineRepository.addMedicine(medicine);
           // 메인으로
+          // ignore: use_build_context_synchronously
           Navigator.popUntil(context, (route) => route.isFirst);
         },
         text: "완료",
