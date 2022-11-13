@@ -9,6 +9,8 @@ import 'package:modo/components/modo_widgets.dart';
 import 'package:modo/pages/add/add_alarm_page.dart';
 import 'package:modo/pages/add/components/add_page_widget.dart';
 
+import '../bottomsheet/pick_image_bottomsheet.dart';
+
 class AddMedicinepage extends StatefulWidget {
   const AddMedicinepage({super.key});
 
@@ -146,26 +148,5 @@ class _MedicineImageButtonState extends State<_MedicineImageButton> {
       Navigator.pop(context);
       showPermissionDeneid(context, permission: "카메라 및 갤러리 접근");
     });
-  }
-}
-
-class PickImageBottomSheet extends StatelessWidget {
-  const PickImageBottomSheet({
-    super.key,
-    required this.onPressedCamera,
-    required this.onPressedGallery,
-  });
-
-  final VoidCallback? onPressedCamera;
-  final VoidCallback? onPressedGallery;
-
-  @override
-  Widget build(BuildContext context) {
-    return BottomSheetBody(
-      children: [
-        TextButton(onPressed: onPressedCamera, child: const Text("카메라로 촬영")),
-        TextButton(onPressed: onPressedGallery, child: const Text("앨범에서 가져오기")),
-      ],
-    );
   }
 }

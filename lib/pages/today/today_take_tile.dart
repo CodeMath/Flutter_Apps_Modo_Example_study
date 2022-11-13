@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:modo/pages/bottomsheet/more_action_bottomsheet.dart';
 import 'package:modo/pages/today/image_detail_page.dart';
 
 import '../../components/modo_constants.dart';
@@ -225,7 +226,14 @@ class _MoreButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoButton(
         onPressed: () {
-          medicineRepository.deleteMedicine(medicineAlarm.key);
+          // medicineRepository.deleteMedicine(medicineAlarm.key);
+          showModalBottomSheet(
+              context: context,
+              builder: (context) => MoreActionBottomSheet(
+                    onPressedModifiy: () {},
+                    onPressedDeleteOnlyMedicine: () {},
+                    onPressedDeleteAll: () {},
+                  ));
         },
         child: const Icon(CupertinoIcons.ellipsis_vertical));
   }
