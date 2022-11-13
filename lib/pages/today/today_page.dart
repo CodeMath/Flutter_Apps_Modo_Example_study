@@ -68,7 +68,7 @@ class TodayPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: smallSpace),
             itemCount: medicineAlarms.length,
             itemBuilder: (context, index) {
-              return MedicineListTile(
+              return BeforeTakeTile(
                 medicineAlarm: medicineAlarms[index],
               );
             },
@@ -84,8 +84,8 @@ class TodayPage extends StatelessWidget {
   }
 }
 
-class MedicineListTile extends StatelessWidget {
-  const MedicineListTile({
+class BeforeTakeTile extends StatelessWidget {
+  const BeforeTakeTile({
     Key? key,
     required this.medicineAlarm,
   }) : super(key: key);
