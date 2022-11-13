@@ -7,6 +7,7 @@ import 'package:modo/pages/today/today_take_tile.dart';
 import '../../main.dart';
 import '../../models/medicine_history.dart';
 import '../../models/medicine.dart';
+import '../today/history_empty_widget.dart';
 
 class HistoryPage extends StatelessWidget {
   const HistoryPage({super.key});
@@ -34,6 +35,11 @@ class HistoryPage extends StatelessWidget {
 
   Widget _buildListView(context, Box<MedicineHistory> historyBox, _) {
     final histories = historyBox.values.toList().reversed.toList();
+
+    if (histories.isEmpty) {
+      return const HistoryEmpty();
+    }
+
     return ListView.builder(
         itemCount: histories.length,
         itemBuilder: ((context, index) {
