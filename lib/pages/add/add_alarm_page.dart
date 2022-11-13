@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modo/main.dart';
@@ -132,7 +130,6 @@ class AlarmBox extends StatelessWidget {
                 style: TextButton.styleFrom(
                     textStyle: Theme.of(context).textTheme.subtitle2),
                 onPressed: () {
-                  log(time.toString());
                   showModalBottomSheet(
                     context: context,
                     builder: (context) {
@@ -141,9 +138,7 @@ class AlarmBox extends StatelessWidget {
                       );
                     },
                   ).then((value) {
-                    log(value.toString());
                     if (value == null || value is! DateTime) return;
-
                     service.setAlarm(
                       prevTime: time,
                       setTime: value,

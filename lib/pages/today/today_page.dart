@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -13,6 +12,7 @@ import 'package:modo/pages/bottomsheet/time_setting_bottomsheet.dart';
 import '../../main.dart';
 import '../../models/medicine.dart';
 import '../../models/medicine_alarm.dart';
+import 'package:modo/models/medicine_history.dart';
 
 class TodayPage extends StatelessWidget {
   const TodayPage({
@@ -148,8 +148,15 @@ class MedicineListTile extends StatelessWidget {
                         builder: (context) => TimeSettingBottomSheet(
                           initialTime: medicineAlarm.alarmTime,
                         ),
-                      ).then((value) {
-                        log("Check!");
+                      ).then((takeDateTime) {
+                        if (takeDateTime == null || takeDateTime is! DateTime) {
+                          return;
+                        }
+                        historyRepository.addHistory(MedicineHistory(
+                          medicineId: medicineAlarm.id,
+                          alarmTime: medicineAlarm.alarmTime,
+                          takeTime: takeDateTime,
+                        ));
                       });
                     },
                     title: '아까',
