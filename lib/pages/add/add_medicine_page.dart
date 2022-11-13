@@ -40,7 +40,7 @@ class _AddMedicinepageState extends State<AddMedicinepage> {
             ),
             const SizedBox(height: largeSpace),
             Center(
-              child: MedicineImageButton(
+              child: _MedicineImageButton(
                 changeImageFile: (File? value) {
                   _medicineImage = value;
                 },
@@ -83,16 +83,18 @@ class _AddMedicinepageState extends State<AddMedicinepage> {
   }
 }
 
-class MedicineImageButton extends StatefulWidget {
-  const MedicineImageButton({super.key, required this.changeImageFile});
+class _MedicineImageButton extends StatefulWidget {
+  const _MedicineImageButton({
+    required this.changeImageFile,
+  });
 
   final ValueChanged<File?> changeImageFile;
 
   @override
-  State<MedicineImageButton> createState() => _MedicineImageButtonState();
+  State<_MedicineImageButton> createState() => _MedicineImageButtonState();
 }
 
-class _MedicineImageButtonState extends State<MedicineImageButton> {
+class _MedicineImageButtonState extends State<_MedicineImageButton> {
   File? _pickedImage;
 
   @override

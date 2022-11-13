@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:modo/models/medicine.dart';
 import 'package:modo/pages/today/image_detail_page.dart';
 
 import '../../components/modo_constants.dart';
@@ -28,7 +27,7 @@ class BeforeTakeTile extends StatelessWidget {
 
     return Row(
       children: [
-        _MedicineImageButton(medicineAlarm: medicineAlarm),
+        MedicineImageButton(imagePath: medicineAlarm.imagePath),
         const SizedBox(
           width: smallSpace,
         ),
@@ -60,6 +59,7 @@ class BeforeTakeTile extends StatelessWidget {
                 medicineId: medicineAlarm.id,
                 alarmTime: medicineAlarm.alarmTime,
                 takeTime: DateTime.now(),
+                medicineKey: medicineAlarm.key,
               ));
             },
             title: '지금',
@@ -90,6 +90,7 @@ class BeforeTakeTile extends StatelessWidget {
       }
       historyRepository.addHistory(MedicineHistory(
         medicineId: medicineAlarm.id,
+        medicineKey: medicineAlarm.key,
         alarmTime: medicineAlarm.alarmTime,
         takeTime: takeDateTime,
       ));
@@ -115,7 +116,7 @@ class AfterTakeTile extends StatelessWidget {
       children: [
         Stack(
           children: [
-            _MedicineImageButton(medicineAlarm: medicineAlarm),
+            MedicineImageButton(imagePath: medicineAlarm.imagePath),
             CircleAvatar(
                 radius: 40,
                 backgroundColor: Colors.green.withOpacity(0.8),
@@ -196,6 +197,7 @@ class AfterTakeTile extends StatelessWidget {
       historyRepository.updateHistory(
         key: history.key,
         history: MedicineHistory(
+          medicineKey: medicineAlarm.key,
           medicineId: medicineAlarm.id,
           alarmTime: medicineAlarm.alarmTime,
           takeTime: takeDateTime,
@@ -223,33 +225,31 @@ class _MoreButton extends StatelessWidget {
   }
 }
 
-class _MedicineImageButton extends StatelessWidget {
-  const _MedicineImageButton({
+class MedicineImageButton extends StatelessWidget {
+  const MedicineImageButton({
     Key? key,
-    required this.medicineAlarm,
+    required this.imagePath,
   }) : super(key: key);
 
-  final MedicineAlarm medicineAlarm;
+  final String? imagePath;
 
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
-      onPressed: medicineAlarm.imagePath == null
+      onPressed: imagePath == null
           ? null
           : () {
               Navigator.push(
                 context,
                 FadePageRoute(
-                  page: ImageDetailPage(medicineAlarm: medicineAlarm),
+                  page: ImageDetailPage(imagePath: imagePath!),
                 ),
               );
             },
       padding: EdgeInsets.zero,
       child: CircleAvatar(
         radius: 40,
-        foregroundImage: medicineAlarm.imagePath == null
-            ? null
-            : FileImage(File(medicineAlarm.imagePath!)),
+        foregroundImage: imagePath == null ? null : FileImage(File(imagePath!)),
       ),
     );
   }

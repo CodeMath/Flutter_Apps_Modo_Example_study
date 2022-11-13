@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:modo/components/modo_constants.dart';
 
@@ -96,6 +94,7 @@ Widget _buildListTile(MedicineAlarm medicineAlarm) {
           final todayTakeHistory = historyBox.values.singleWhere(
             (history) =>
                 history.medicineId == medicineAlarm.id &&
+                history.medicineKey == medicineAlarm.key &&
                 history.alarmTime == medicineAlarm.alarmTime &&
                 isToday(
                   history.takeTime,
@@ -105,6 +104,7 @@ Widget _buildListTile(MedicineAlarm medicineAlarm) {
               medicineId: -1,
               alarmTime: "",
               takeTime: DateTime.now(),
+              medicineKey: -1,
             ),
           );
 
