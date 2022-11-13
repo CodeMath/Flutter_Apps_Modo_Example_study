@@ -20,7 +20,7 @@ class MedicineHistory extends HiveObject {
   final String alarmTime;
 
   @HiveField(2)
-  final DateTime? takeTime;
+  final DateTime takeTime;
 
   @override
   String toString() {

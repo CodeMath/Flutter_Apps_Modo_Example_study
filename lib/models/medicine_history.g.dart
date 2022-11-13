@@ -19,7 +19,7 @@ class MedicineHistoryAdapter extends TypeAdapter<MedicineHistory> {
     return MedicineHistory(
       medicineId: fields[0] as int,
       alarmTime: fields[1] as String,
-      takeTime: fields[2] as DateTime?,
+      takeTime: fields[2] as DateTime,
     );
   }
 
