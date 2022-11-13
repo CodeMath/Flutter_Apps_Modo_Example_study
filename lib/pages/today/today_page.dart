@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -7,6 +8,7 @@ import 'package:modo/components/modo_constants.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:modo/components/modo_page_route.dart';
 import 'package:modo/pages/today/today_empty_widget.dart';
+import 'package:modo/pages/bottomsheet/time_setting_bottomsheet.dart';
 
 import '../../main.dart';
 import '../../models/medicine.dart';
@@ -140,7 +142,16 @@ class MedicineListTile extends StatelessWidget {
                     style: textStyle,
                   ),
                   TileActionButton(
-                    onTap: () {},
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) => TimeSettingBottomSheet(
+                          initialTime: medicineAlarm.alarmTime,
+                        ),
+                      ).then((value) {
+                        log("Check!");
+                      });
+                    },
                     title: '아까',
                   ),
                   Text(
@@ -199,13 +210,11 @@ class TileActionButton extends StatelessWidget {
     final buttontextStyle = Theme.of(context)
         .textTheme
         .bodyText2
-        ?.copyWith(fontWeight: FontWeight.w500, color: Colors.blue);
+        ?.copyWith(fontWeight: FontWeight.w700);
     return GestureDetector(
-      onTap: () {
-        onTap;
-      },
+      onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(5.0),
         // 한 부분만 복사하려할 때 사용 copyWidth
         child: Text(title, style: buttontextStyle),
       ),

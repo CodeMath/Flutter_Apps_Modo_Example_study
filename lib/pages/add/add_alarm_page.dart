@@ -1,10 +1,11 @@
 import 'dart:io';
 
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modo/main.dart';
-import 'package:intl/intl.dart';
-import 'package:modo/components/modo_colors.dart';
+
 import 'package:modo/components/modo_constants.dart';
 import 'package:modo/pages/add/components/add_page_widget.dart';
 import 'package:modo/services/add_medicine_service.dart';
@@ -12,6 +13,7 @@ import 'package:modo/services/add_medicine_service.dart';
 import '../../components/modo_widgets.dart';
 import '../../models/medicine.dart';
 import '../../services/modo_file_service.dart';
+import '../bottomsheet/time_setting_bottomsheet.dart';
 
 class AddAlarmPage extends StatelessWidget {
   AddAlarmPage(
@@ -130,84 +132,25 @@ class AlarmBox extends StatelessWidget {
                 style: TextButton.styleFrom(
                     textStyle: Theme.of(context).textTheme.subtitle2),
                 onPressed: () {
+                  log(time.toString());
                   showModalBottomSheet(
-                      context: context,
-                      builder: (context) {
-                        return TimePickerBottomSheet(
-                          initialTime: time,
-                          service: service,
-                        );
-                      });
+                    context: context,
+                    builder: (context) {
+                      return TimeSettingBottomSheet(
+                        initialTime: time,
+                      );
+                    },
+                  ).then((value) {
+                    log(value.toString());
+                    if (value == null || value is! DateTime) return;
+
+                    service.setAlarm(
+                      prevTime: time,
+                      setTime: value,
+                    );
+                  });
                 },
                 child: Text(time)))
-      ],
-    );
-  }
-}
-
-// ignore: must_be_immutable
-class TimePickerBottomSheet extends StatelessWidget {
-  TimePickerBottomSheet({
-    super.key,
-    required this.initialTime,
-    required this.service,
-  });
-
-  final String initialTime;
-  final AddMedicineService service;
-  DateTime? _setDateTime;
-
-  @override
-  Widget build(BuildContext context) {
-    final initialDateTime = DateFormat('HH:mm').parse(initialTime);
-
-    return BottomSheetBody(
-      children: [
-        SizedBox(
-          height: 200,
-          child: CupertinoDatePicker(
-              initialDateTime: initialDateTime,
-              mode: CupertinoDatePickerMode.time,
-              onDateTimeChanged: (dateTime) {
-                _setDateTime = dateTime;
-              }),
-        ),
-        const SizedBox(
-          height: regularSpace,
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: SizedBox(
-                height: submitButtonHeight,
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        foregroundColor: ModoColors.primaryColor,
-                        textStyle: Theme.of(context).textTheme.subtitle1,
-                        backgroundColor: Colors.white),
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text("취소")),
-              ),
-            ),
-            const SizedBox(width: smallSpace),
-            Expanded(
-              child: SizedBox(
-                height: submitButtonHeight,
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      textStyle: Theme.of(context).textTheme.subtitle1,
-                    ),
-                    onPressed: () {
-                      service.setAlarm(
-                          prevTime: initialTime,
-                          setTime: _setDateTime ?? initialDateTime);
-                      Navigator.pop(context);
-                    },
-                    child: const Text("선택")),
-              ),
-            )
-          ],
-        )
       ],
     );
   }
