@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:modo/components/modo_constants.dart';
 
@@ -90,12 +92,13 @@ Widget _buildListTile(MedicineAlarm medicineAlarm) {
           /// isToday(history.takeTime!, DateTime.now()) null 값 처리
           /// // 이렇게도 줄일 수 있음.
           // history.takeTime.difference(DateTime.now()).inDays == 0
+
           final todayTakeHistory = historyBox.values.singleWhere(
             (history) =>
                 history.medicineId == medicineAlarm.id &&
                 history.alarmTime == medicineAlarm.alarmTime &&
                 isToday(
-                  history.takeTime!,
+                  history.takeTime,
                   DateTime.now(),
                 ),
             orElse: () => MedicineHistory(
@@ -113,6 +116,7 @@ Widget _buildListTile(MedicineAlarm medicineAlarm) {
           } else {
             return AfterTakeTile(
               medicineAlarm: medicineAlarm,
+              history: todayTakeHistory,
             );
           }
         }
