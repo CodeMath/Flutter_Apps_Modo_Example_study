@@ -105,8 +105,10 @@ flutter:
   fonts:
     - family: BMYEONSUNG
       fonts:
-        - asset: assets/font/BMYEONSUNG_ttf.ttf
-          style: normal
+        - asset: assets/font/G_Edu_light.ttf
+          weight: 300
+        - asset: assets/font/G_Edu_Bold.ttf
+          weight: 700
     
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
