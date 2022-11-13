@@ -101,6 +101,8 @@ Widget _buildListTile(MedicineAlarm medicineAlarm) {
                   DateTime.now(),
                 ),
             orElse: () => MedicineHistory(
+              name: '',
+              imagePath: null,
               medicineId: -1,
               alarmTime: "",
               takeTime: DateTime.now(),

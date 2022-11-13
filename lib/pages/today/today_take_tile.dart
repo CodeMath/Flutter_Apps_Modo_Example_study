@@ -56,6 +56,8 @@ class BeforeTakeTile extends StatelessWidget {
           TileActionButton(
             onTap: () {
               historyRepository.addHistory(MedicineHistory(
+                name: medicineAlarm.name,
+                imagePath: medicineAlarm.imagePath,
                 medicineId: medicineAlarm.id,
                 alarmTime: medicineAlarm.alarmTime,
                 takeTime: DateTime.now(),
@@ -89,6 +91,8 @@ class BeforeTakeTile extends StatelessWidget {
         return;
       }
       historyRepository.addHistory(MedicineHistory(
+        name: medicineAlarm.name,
+        imagePath: medicineAlarm.imagePath,
         medicineId: medicineAlarm.id,
         medicineKey: medicineAlarm.key,
         alarmTime: medicineAlarm.alarmTime,
@@ -197,6 +201,8 @@ class AfterTakeTile extends StatelessWidget {
       historyRepository.updateHistory(
         key: history.key,
         history: MedicineHistory(
+          name: medicineAlarm.name,
+          imagePath: medicineAlarm.imagePath,
           medicineKey: medicineAlarm.key,
           medicineId: medicineAlarm.id,
           alarmTime: medicineAlarm.alarmTime,
