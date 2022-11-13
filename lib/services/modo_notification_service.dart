@@ -128,7 +128,7 @@ class ModoNotificationService {
     }
   }
 
-  Future<void> deleteMultipleAlarm(List<String> alarmIds) async {
+  Future<void> deleteMultipleAlarm(Iterable<String> alarmIds) async {
     log('[before delete notification list] ${await pendingNotificationIds}');
     for (var alarmId in alarmIds) {
       final id = int.parse(alarmId);

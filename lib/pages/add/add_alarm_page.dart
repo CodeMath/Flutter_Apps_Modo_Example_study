@@ -13,15 +13,22 @@ import '../../models/medicine.dart';
 import '../../services/modo_file_service.dart';
 import '../bottomsheet/time_setting_bottomsheet.dart';
 
+// ignore: must_be_immutable
 class AddAlarmPage extends StatelessWidget {
   AddAlarmPage(
-      {Key? key, required this.medicineImage, required this.medicineName})
-      : super(key: key);
+      {Key? key,
+      required this.medicineImage,
+      required this.medicineName,
+      required this.updateMedicineId})
+      : super(key: key) {
+    service = AddMedicineService(updateMedicineId);
+  }
 
+  final int updateMedicineId;
   final File? medicineImage;
   final String medicineName;
 
-  final service = AddMedicineService();
+  late AddMedicineService service;
 
   @override
   Widget build(BuildContext context) {
@@ -47,45 +54,106 @@ class AddAlarmPage extends StatelessWidget {
       ]),
       bottomNavigationBar: BottomSubmitButton(
         onPressed: () async {
-          // 1. add alarm
-          bool result = false;
-
-          for (var alarm in service.alarms) {
-            result = await notification.addNotifications(
-              // id : 1+ 08:00 > 10800
-              medicineId: medicineRepository.newId,
-              alarmTimeStr: alarm,
-              title: "$alarm 약 먹을 시간이에요!",
-              body: "$medicineName 복약했다고 알려주세요!",
-            );
-
-            if (!result) {
-              // ignore: use_build_context_synchronously
-              return showPermissionDeneid(context, permission: "알람 접근 권한");
-            }
-          }
-
-          // 2. save image(local dir) & text
-          // android Up to SDK 31 version
-          String? imageFilePath;
-          if (medicineImage != null) {
-            imageFilePath = await saveImageToLocalDirectory(medicineImage!);
-          }
-
-          // 3. add medicine model (local DB, hive)
-          final medicine = Medicine(
-              id: medicineRepository.newId,
-              alarms: service.alarms.toList(),
-              imagePath: imageFilePath,
-              name: medicineName);
-          medicineRepository.addMedicine(medicine);
-          // 메인으로
-          // ignore: use_build_context_synchronously
-          Navigator.popUntil(context, (route) => route.isFirst);
+          final isUpdate = updateMedicineId != -1;
+          isUpdate
+              ? await _onUpdateMedicine(context)
+              : await _onAddMedicine(context);
         },
         text: "완료",
       ),
     );
+  }
+
+  Future<void> _onUpdateMedicine(BuildContext context) async {
+    bool result = false;
+    // 1-1. delete previous alarm
+    final alarmIds = _updateMedicine.alarms
+        .map((alarmTime) => notification.alarmId(updateMedicineId, alarmTime));
+    await notification.deleteMultipleAlarm(alarmIds);
+
+    // 1-2. add alarm
+    for (var alarm in service.alarms) {
+      result = await notification.addNotifications(
+        // id : 1+ 08:00 > 10800
+        medicineId: updateMedicineId,
+        alarmTimeStr: alarm,
+        title: "$alarm 약 먹을 시간이에요!",
+        body: "$medicineName 복약했다고 알려주세요!",
+      );
+
+      if (!result) {
+        // ignore: use_build_context_synchronously
+        return showPermissionDeneid(context, permission: "알람 접근 권한");
+      }
+    }
+
+    String? imageFilePath = _updateMedicine.imagePath;
+    if (_updateMedicine.imagePath != medicineImage?.path) {
+      // 2-1. delete previous image
+      if (_updateMedicine.imagePath != null) {
+        deleteImage(_updateMedicine.imagePath!);
+      }
+      // 2-2. save image(local dir) & text
+      if (medicineImage != null) {
+        imageFilePath = await saveImageToLocalDirectory(medicineImage!);
+      }
+    }
+
+    // 3. update medicine
+    final medicine = Medicine(
+      id: updateMedicineId,
+      alarms: service.alarms.toList(),
+      imagePath: imageFilePath,
+      name: medicineName,
+    );
+
+    // Updae
+    medicineRepository.updateMedicine(
+      key: _updateMedicine.key,
+      medicine: medicine,
+    );
+
+    // 메인으로
+    // ignore: use_build_context_synchronously
+    Navigator.popUntil(context, (route) => route.isFirst);
+  }
+
+  Future<void> _onAddMedicine(BuildContext context) async {
+    // 1. add alarm
+    bool result = false;
+
+    for (var alarm in service.alarms) {
+      result = await notification.addNotifications(
+        // id : 1+ 08:00 > 10800
+        medicineId: medicineRepository.newId,
+        alarmTimeStr: alarm,
+        title: "$alarm 약 먹을 시간이에요!",
+        body: "$medicineName 복약했다고 알려주세요!",
+      );
+
+      if (!result) {
+        // ignore: use_build_context_synchronously
+        return showPermissionDeneid(context, permission: "알람 접근 권한");
+      }
+    }
+
+    // 2. save image(local dir) & text
+    // android Up to SDK 31 version
+    String? imageFilePath;
+    if (medicineImage != null) {
+      imageFilePath = await saveImageToLocalDirectory(medicineImage!);
+    }
+
+    // 3. add medicine model (local DB, hive)
+    final medicine = Medicine(
+        id: medicineRepository.newId,
+        alarms: service.alarms.toList(),
+        imagePath: imageFilePath,
+        name: medicineName);
+    medicineRepository.addMedicine(medicine);
+    // 메인으로
+    // ignore: use_build_context_synchronously
+    Navigator.popUntil(context, (route) => route.isFirst);
   }
 
   List<Widget> get alarmWidgets {
@@ -100,6 +168,11 @@ class AddAlarmPage extends StatelessWidget {
     ));
     return children;
   }
+
+  Medicine get _updateMedicine =>
+      medicineRepository.medicineBox.values.singleWhere(
+        (medicine) => medicine.id == updateMedicineId,
+      );
 }
 
 class AlarmBox extends StatelessWidget {

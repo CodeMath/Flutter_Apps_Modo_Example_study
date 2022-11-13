@@ -6,21 +6,49 @@ import 'package:image_picker/image_picker.dart';
 import 'package:modo/components/modo_constants.dart';
 import 'package:modo/components/modo_page_route.dart';
 import 'package:modo/components/modo_widgets.dart';
+import 'package:modo/main.dart';
 import 'package:modo/pages/add/add_alarm_page.dart';
 import 'package:modo/pages/add/components/add_page_widget.dart';
 
+import '../../models/medicine.dart';
 import '../bottomsheet/pick_image_bottomsheet.dart';
 
 class AddMedicinepage extends StatefulWidget {
-  const AddMedicinepage({super.key});
+  const AddMedicinepage({
+    super.key,
+    // -1 : Add , other: modify
+    this.updateMedicineId = -1,
+  });
+
+  final int updateMedicineId;
 
   @override
   State<AddMedicinepage> createState() => _AddMedicinepageState();
 }
 
 class _AddMedicinepageState extends State<AddMedicinepage> {
-  final TextEditingController _nameController = TextEditingController();
+  late TextEditingController _nameController;
   File? _medicineImage;
+
+  // if update?
+  get _isUpdate => widget.updateMedicineId != -1;
+  Medicine get _updateMedicine =>
+      medicineRepository.medicineBox.values.singleWhere(
+        (medicine) => medicine.id == widget.updateMedicineId,
+      );
+
+  @override
+  void initState() {
+    super.initState();
+    if (_isUpdate) {
+      _nameController = TextEditingController(text: _updateMedicine.name);
+      if (_updateMedicine.imagePath != null) {
+        _medicineImage = File(_updateMedicine.imagePath!);
+      }
+    } else {
+      _nameController = TextEditingController();
+    }
+  }
 
   @override
   void dispose() {
@@ -43,6 +71,7 @@ class _AddMedicinepageState extends State<AddMedicinepage> {
             const SizedBox(height: largeSpace),
             Center(
               child: _MedicineImageButton(
+                updateImage: _medicineImage,
                 changeImageFile: (File? value) {
                   _medicineImage = value;
                 },
@@ -80,6 +109,7 @@ class _AddMedicinepageState extends State<AddMedicinepage> {
         context,
         FadePageRoute(
             page: AddAlarmPage(
+                updateMedicineId: widget.updateMedicineId,
                 medicineImage: _medicineImage,
                 medicineName: _nameController.text)));
   }
@@ -88,9 +118,11 @@ class _AddMedicinepageState extends State<AddMedicinepage> {
 class _MedicineImageButton extends StatefulWidget {
   const _MedicineImageButton({
     required this.changeImageFile,
+    this.updateImage,
   });
 
   final ValueChanged<File?> changeImageFile;
+  final File? updateImage;
 
   @override
   State<_MedicineImageButton> createState() => _MedicineImageButtonState();
@@ -98,6 +130,12 @@ class _MedicineImageButton extends StatefulWidget {
 
 class _MedicineImageButtonState extends State<_MedicineImageButton> {
   File? _pickedImage;
+
+  @override
+  void initState() {
+    super.initState();
+    _pickedImage = widget.updateImage;
+  }
 
   @override
   Widget build(BuildContext context) {

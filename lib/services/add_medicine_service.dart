@@ -1,8 +1,21 @@
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
+import '../main.dart';
+
 /// ChangeNotifier 로 받는 쪽에서 새롭게 빌드 할 수 있게
 class AddMedicineService with ChangeNotifier {
+  AddMedicineService(int updateMedicineId) {
+    final isUpdate = updateMedicineId != -1;
+    if (isUpdate) {
+      final updateAlarms = medicineRepository.medicineBox.values
+          .singleWhere((medicine) => medicine.id == updateMedicineId)
+          .alarms;
+      _alarms.clear();
+      _alarms.addAll(updateAlarms);
+    }
+  }
+
   final _alarms = <String>{'08:00', '13:00', '19:00'};
 
   Set<String> get alarms => _alarms;

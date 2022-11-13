@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:modo/pages/add/add_medicine_page.dart';
 import 'package:modo/pages/bottomsheet/more_action_bottomsheet.dart';
 import 'package:modo/pages/today/image_detail_page.dart';
 
@@ -230,7 +231,15 @@ class _MoreButton extends StatelessWidget {
           showModalBottomSheet(
               context: context,
               builder: (context) => MoreActionBottomSheet(
-                    onPressedModifiy: () {},
+                    onPressedModifiy: () {
+                      Navigator.push(
+                        context,
+                        FadePageRoute(
+                            page: AddMedicinepage(
+                          updateMedicineId: medicineAlarm.id,
+                        )),
+                      ).then((_) => Navigator.maybePop(context));
+                    },
                     onPressedDeleteOnlyMedicine: () {
                       //1. 알람 삭제 - id 값을 알기 위해
                       notification.deleteMultipleAlarm(alarmIds);
